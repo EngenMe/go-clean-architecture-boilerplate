@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/mehdihadeli/go-mediatr"
 	"log"
 	"net/http"
 	"os"
@@ -14,9 +13,11 @@ import (
 
 	"github.com/EngenMe/go-clean-architecture/api/routes"
 	"github.com/EngenMe/go-clean-architecture/application/services"
+	"github.com/EngenMe/go-clean-architecture/domain/entities"
 	"github.com/EngenMe/go-clean-architecture/infrastructure/database"
 	"github.com/EngenMe/go-clean-architecture/infrastructure/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/mehdihadeli/go-mediatr"
 )
 
 func main() {
@@ -39,11 +40,12 @@ func main() {
 	}
 
 	// Initialize repositories
-	userRepository := database.NewPostgresUserRepository(db)
+	userRepository := database.NewGenericPostgresRepository[entities.User](db)
 
 	// Register services
 	userService := services.RegisterUserService(userRepository)
-	authService := services.RegisterAuthService(userRepository)
+	// Update authService registration if needed
+	authService := services.RegisterAuthService(services.NewUserRepositoryAdapter(userRepository))
 
 	// Configure Gin
 	router := gin.Default()
@@ -75,7 +77,7 @@ func main() {
 	<-quit
 	log.Println("Shutting down server...")
 
-	// Give server 5 seconds to shut down gracefully
+	// Give the server 5 seconds to shut down gracefully
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {

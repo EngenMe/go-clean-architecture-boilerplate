@@ -15,8 +15,20 @@ type User struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
+// GetID returns the ID of the user
+// Note: This is a value receiver to implement the Entity interface
+func (u User) GetID() uint {
+	return u.ID
+}
+
+// SetID sets the ID of the user
+// Note: This is a value receiver to implement the Entity interface
+func (u User) SetID(id uint) {
+	u.ID = id
+}
+
 // TableName specifies the table name for the User entity
-func (*User) TableName() string {
+func (User) TableName() string {
 	return "users"
 }
 
@@ -31,7 +43,7 @@ type UserDTO struct {
 }
 
 // ToDTO converts a User entity to UserDTO
-func (u *User) ToDTO() UserDTO {
+func (u User) ToDTO() UserDTO {
 	return UserDTO{
 		ID:        u.ID,
 		Email:     u.Email,

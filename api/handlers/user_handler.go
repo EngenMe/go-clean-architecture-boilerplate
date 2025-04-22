@@ -97,7 +97,7 @@ func (h *UserHandler) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// Verify ID in path matches ID in body
+	// Verify ID in a path matches ID in body
 	idParam := c.Param("id")
 	id, err := strconv.ParseUint(idParam, 10, 32)
 	if err != nil || uint(id) != command.ID {
