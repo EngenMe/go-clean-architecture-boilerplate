@@ -1,11 +1,11 @@
-# Build stage
-FROM golang:1.24-alpine AS builder
+FROM golang:1.24-alpine
 
 # Set working directory
 WORKDIR /app
 
-# Install build dependencies
-RUN apk add --no-cache git
+# Install build dependencies and Air for hot reloading
+RUN apk add --no-cache git && \
+    go install github.com/air-verse/air@latest
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./
@@ -13,34 +13,6 @@ COPY go.mod go.sum ./
 # Download dependencies
 RUN go mod download
 
-# Copy source code
-COPY . .
-
-# Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
-
-# Final stage
-FROM alpine:latest
-
-# Install CA certificates for HTTPS
-RUN apk --no-cache add ca-certificates
-
-# Set working directory
-WORKDIR /app
-
-# Copy the binary from the builder stage
-COPY --from=builder /app/main .
-
-# Copy necessary files for runtime
-COPY --from=builder /app/infrastructure/database/migrations ./infrastructure/database/migrations/
-
-# Create a non-root user and switch to it
-RUN adduser -D -g '' appuser
-RUN chown -R appuser:appuser /app
-USER appuser
-
-# Expose the application port
+# Air will handle hot reloading
 EXPOSE 8080
-
-# Run the application
-CMD ["./main"]
+ENTRYPOINT ["air"]

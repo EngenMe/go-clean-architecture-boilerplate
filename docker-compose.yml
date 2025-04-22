@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   app:
     build:
@@ -21,10 +20,13 @@ services:
       - DB_SSL_MODE=disable
       - JWT_SECRET=d0ef09c9-c182-4305-8508-091d87601a6e
       - JWT_EXPIRATION_HOURS=24
+    volumes:
+      - .:/app  # Mount local code into container
     restart: unless-stopped
     networks:
       - go-clean-arch-network
 
+  # Postgres configuration remains the same
   postgres:
     image: postgres:17-alpine
     container_name: go-clean-arch-postgres
@@ -36,7 +38,6 @@ services:
       - POSTGRES_DB=GO_CLEAN_ARCHITECTURE
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # Initialize database with migration scripts
       - ./infrastructure/database/migrations:/docker-entrypoint-initdb.d
     restart: unless-stopped
     networks:
@@ -44,7 +45,6 @@ services:
 
 volumes:
   postgres_data:
-
 networks:
   go-clean-arch-network:
     driver: bridge
