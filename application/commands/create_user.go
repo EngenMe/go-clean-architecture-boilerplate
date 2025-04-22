@@ -16,16 +16,16 @@ import (
 type CreateUserCommand struct {
 	Email     string `json:"email" binding:"required,email"`
 	Password  string `json:"password" binding:"required,min=6"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+	FirstName string `json:"firstName" binding:"required"`
+	LastName  string `json:"lastName" binding:"required"`
 }
 
-// CreateUserHandler handles creation of new users
+// CreateUserHandler handle creation of new users
 type CreateUserHandler struct {
 	UserRepository repositories.UserRepository
 }
 
-// Handle processes the create user command
+// Handle processes they create user command
 func (h *CreateUserHandler) Handle(
 	ctx context.Context,
 	command CreateUserCommand,
@@ -36,7 +36,7 @@ func (h *CreateUserHandler) Handle(
 		return nil, err
 	}
 	if existingUser != nil {
-		return nil, utils.ErrConflict
+		return nil, utils.ErrEmailAlreadyExists
 	}
 
 	// Hash the password
@@ -45,7 +45,7 @@ func (h *CreateUserHandler) Handle(
 		bcrypt.DefaultCost,
 	)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to hash password: %w", err)
 	}
 
 	// Create the user
@@ -59,14 +59,14 @@ func (h *CreateUserHandler) Handle(
 	}
 
 	if err := h.UserRepository.Create(ctx, user); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create user: %w", err)
 	}
 
 	userDTO := user.ToDTO()
 	return &userDTO, nil
 }
 
-// RegisterCreateUserHandler registers the create user command handler
+// RegisterCreateUserHandler registers the creation user command handler
 func RegisterCreateUserHandler(userRepository repositories.UserRepository) error {
 	if err := mediatr.RegisterRequestHandler[CreateUserCommand, *entities.UserDTO](
 		&CreateUserHandler{

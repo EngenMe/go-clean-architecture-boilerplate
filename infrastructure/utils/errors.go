@@ -7,10 +7,13 @@ import (
 
 // Common error types
 var (
-	ErrNotFound     = errors.New("resource not found")
-	ErrUnauthorized = errors.New("unauthorized")
-	ErrBadRequest   = errors.New("bad request")
-	ErrConflict     = errors.New("resource already exists")
+	ErrNotFound           = errors.New("resource not found")
+	ErrUnauthorized       = errors.New("unauthorized")
+	ErrBadRequest         = errors.New("bad request")
+	ErrConflict           = errors.New("resource already exists")
+	ErrEmailAlreadyExists = errors.New("email already exists")
+	ErrInvalidInput       = errors.New("invalid input data")
+	ErrWeakPassword       = errors.New("password does not meet security requirements")
 )
 
 // APIError represents an API error response
@@ -26,9 +29,12 @@ func ErrorToStatusCode(err error) int {
 		return http.StatusNotFound
 	case errors.Is(err, ErrUnauthorized):
 		return http.StatusUnauthorized
-	case errors.Is(err, ErrBadRequest):
+	case errors.Is(err, ErrBadRequest), errors.Is(
+		err,
+		ErrInvalidInput,
+	), errors.Is(err, ErrWeakPassword):
 		return http.StatusBadRequest
-	case errors.Is(err, ErrConflict):
+	case errors.Is(err, ErrConflict), errors.Is(err, ErrEmailAlreadyExists):
 		return http.StatusConflict
 	default:
 		return http.StatusInternalServerError

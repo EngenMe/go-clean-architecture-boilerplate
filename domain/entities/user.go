@@ -9,20 +9,18 @@ type User struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	Email     string    `json:"email" gorm:"uniqueIndex;not null"`
 	Password  string    `json:"-" gorm:"not null"` // Password is never exposed in JSON responses
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
+	FirstName string    `json:"firstName" gorm:"not null"`
+	LastName  string    `json:"lastName" gorm:"not null"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 // GetID returns the ID of the user
-// Note: This is a value receiver to implement the Entity interface
 func (u User) GetID() uint {
 	return u.ID
 }
 
 // SetID sets the ID of the user
-// Note: This is a value receiver to implement the Entity interface
 func (u User) SetID(id uint) {
 	u.ID = id
 }

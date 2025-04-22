@@ -6,7 +6,7 @@ import (
 	"github.com/EngenMe/go-clean-architecture/domain/entities"
 )
 
-// UserRepository defines the interface for user data operations
+// UserRepository defines operations for user storage
 type UserRepository interface {
 	Create(ctx context.Context, user *entities.User) error
 	GetByID(ctx context.Context, id uint) (*entities.User, error)

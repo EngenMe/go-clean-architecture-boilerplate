@@ -1,10 +1,11 @@
 package routes
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"github.com/EngenMe/go-clean-architecture/api/handlers"
 	"github.com/EngenMe/go-clean-architecture/api/middlewares"
 	"github.com/EngenMe/go-clean-architecture/application/services"
-	"github.com/gin-gonic/gin"
 )
 
 // SetupRoutes configures all API routes
@@ -16,10 +17,10 @@ func SetupRoutes(
 	// Register global middlewares
 	router.Use(middlewares.LoggingMiddleware())
 
-	// Create API group
+	// Create an API group
 	api := router.Group("/api/v1")
 
-	// Register auth routes
+	// Register auth routes (no auth middleware - these are public endpoints)
 	authHandler := handlers.NewAuthHandler(authService)
 	authHandler.RegisterRoutes(api)
 

@@ -2,10 +2,13 @@ package services
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/EngenMe/go-clean-architecture/application/commands"
 	"github.com/EngenMe/go-clean-architecture/domain/entities"
 	"github.com/EngenMe/go-clean-architecture/infrastructure/utils"
 	"github.com/EngenMe/go-clean-architecture/interfaces/repositories"
+	"github.com/mehdihadeli/go-mediatr"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -15,8 +18,16 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
-// LoginResponse represents the response to a successful login
-type LoginResponse struct {
+// SignUpRequest represents sign-up data
+type SignUpRequest struct {
+	Email     string `json:"email" binding:"required,email"`
+	Password  string `json:"password" binding:"required,min=6"`
+	FirstName string `json:"firstName" binding:"required"`
+	LastName  string `json:"lastName" binding:"required"`
+}
+
+// AuthResponse represents the response to a successful authentication
+type AuthResponse struct {
 	Token string           `json:"token"`
 	User  entities.UserDTO `json:"user"`
 }
@@ -37,7 +48,7 @@ func NewAuthService(userRepository repositories.UserRepository) *AuthService {
 func (s *AuthService) Login(
 	ctx context.Context,
 	request LoginRequest,
-) (*LoginResponse, error) {
+) (*AuthResponse, error) {
 	// Find user by email
 	user, err := s.userRepository.GetByEmail(ctx, request.Email)
 	if err != nil {
@@ -62,9 +73,49 @@ func (s *AuthService) Login(
 		return nil, err
 	}
 
-	return &LoginResponse{
+	return &AuthResponse{
 		Token: token,
 		User:  user.ToDTO(),
+	}, nil
+}
+
+// SignUp registers a new user and generates a JWT token
+func (s *AuthService) SignUp(
+	ctx context.Context,
+	request SignUpRequest,
+) (*AuthResponse, error) {
+	// Create user command
+	command := commands.CreateUserCommand{
+		Email:     request.Email,
+		Password:  request.Password,
+		FirstName: request.FirstName,
+		LastName:  request.LastName,
+	}
+
+	// Execute command via mediatr
+	result, err := mediatr.Send[commands.CreateUserCommand, *entities.UserDTO](
+		ctx,
+		command,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create user: %w", err)
+	}
+
+	// Find the newly created user to get full entity with ID
+	user, err := s.userRepository.GetByEmail(ctx, request.Email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to retrieve user: %w", err)
+	}
+
+	// Generate JWT token
+	token, err := utils.GenerateToken(user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to generate token: %w", err)
+	}
+
+	return &AuthResponse{
+		Token: token,
+		User:  *result,
 	}, nil
 }
 
