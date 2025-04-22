@@ -1,0 +1,38 @@
+# Git files
+.git
+.gitignore
+
+# Docker files
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Build artifacts
+bin/
+build/
+*.exe
+*.test
+*.out
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment files (handled via docker-compose environment variables)
+.env
+.env.*
+
+# Logs
+*.log
+
+# Documentation
+README.md
+docs/
+
+# Test files
+*_test.go
+
+# Temporary files
+tmp/

@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-clean-arch-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      - PORT=8080
+      - ENV=development
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=EngenMe
+      - DB_PASSWORD=Mehmed_0793727673
+      - DB_NAME=GO_CLEAN_ARCHITECTURE
+      - DB_SSL_MODE=disable
+      - JWT_SECRET=d0ef09c9-c182-4305-8508-091d87601a6e
+      - JWT_EXPIRATION_HOURS=24
+    restart: unless-stopped
+    networks:
+      - go-clean-arch-network
+
+  postgres:
+    image: postgres:17-alpine
+    container_name: go-clean-arch-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=EngenMe
+      - POSTGRES_PASSWORD=Mehmed_0793727673
+      - POSTGRES_DB=GO_CLEAN_ARCHITECTURE
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Initialize database with migration scripts
+      - ./infrastructure/database/migrations:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    networks:
+      - go-clean-arch-network
+
+volumes:
+  postgres_data:
+
+networks:
+  go-clean-arch-network:
+    driver: bridge

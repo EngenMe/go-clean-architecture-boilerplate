@@ -1,0 +1,27 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Environment variables
+.env
+
+# IDE files
+.idea/
+.vscode/
+
+# Dependency directories
+vendor/
+
+# Go workspace file
+go.work
+
+# Logs
+*.log
+
+# Build output
+/build/
