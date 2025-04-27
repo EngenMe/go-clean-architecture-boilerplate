@@ -11,7 +11,7 @@ import (
 
 // DeleteUserCommand is a command to delete a user
 type DeleteUserCommand struct {
-	ID uint `json:"id" binding:"required"`
+	ID uint `json:"id" binding:"required" example:"1"`
 }
 
 // DeleteUserHandler handles deletion of users
@@ -23,7 +23,7 @@ type DeleteUserHandler struct {
 func (h *DeleteUserHandler) Handle(
 	ctx context.Context,
 	command DeleteUserCommand,
-) (error, error) { // Changed to return (error, error)
+) (error, error) {
 	// Check if user exists
 	user, err := h.UserRepository.GetByID(ctx, command.ID)
 	if err != nil {
@@ -34,7 +34,7 @@ func (h *DeleteUserHandler) Handle(
 	}
 
 	err = h.UserRepository.Delete(ctx, command.ID)
-	return nil, err // Return nil as the first value, error as the second
+	return nil, err
 }
 
 // RegisterDeleteUserHandler registers the delete user command handler

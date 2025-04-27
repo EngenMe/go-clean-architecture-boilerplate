@@ -12,7 +12,7 @@ import (
 
 // GetUserByIDQuery is a query to get a user by ID
 type GetUserByIDQuery struct {
-	ID uint `json:"id" binding:"required"`
+	ID uint `json:"id" binding:"required" example:"1"`
 }
 
 // GetUserByIDHandler handles retrieving a user by ID

@@ -18,8 +18,8 @@ var (
 
 // APIError represents an API error response
 type APIError struct {
-	Status  int    `json:"status"`
-	Message string `json:"message"`
+	Status  int    `json:"status" example:"400"`
+	Message string `json:"message" example:"An error occurred"`
 }
 
 // ErrorToStatusCode maps error types to HTTP status codes

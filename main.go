@@ -1,3 +1,21 @@
+// @title User Management API
+// @version 1.0
+// @description API for user authentication and management
+// @termsOfService http://example.com/terms/
+
+// @contact.name API Support
+// @contact.url http://www.example.com/support
+// @contact.email support@example.com
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /api/v1
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+
 package main
 
 import (
@@ -44,7 +62,6 @@ func main() {
 
 	// Register services
 	userService := services.RegisterUserService(userRepository)
-	// Update authService registration if needed
 	authService := services.RegisterAuthService(services.NewUserRepositoryAdapter(userRepository))
 
 	// Configure Gin

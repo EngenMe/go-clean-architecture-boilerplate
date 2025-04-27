@@ -14,10 +14,10 @@ import (
 
 // CreateUserCommand is a command to create a new user
 type CreateUserCommand struct {
-	Email     string `json:"email" binding:"required,email"`
-	Password  string `json:"password" binding:"required,min=6"`
-	FirstName string `json:"firstName" binding:"required"`
-	LastName  string `json:"lastName" binding:"required"`
+	Email     string `json:"email" binding:"required,email" example:"user@example.com"`
+	Password  string `json:"password" binding:"required,min=6" example:"password123"`
+	FirstName string `json:"firstName" binding:"required" example:"John"`
+	LastName  string `json:"lastName" binding:"required" example:"Doe"`
 }
 
 // CreateUserHandler handle creation of new users
@@ -25,7 +25,7 @@ type CreateUserHandler struct {
 	UserRepository repositories.UserRepository
 }
 
-// Handle processes they create user command
+// Handle processes the create user command
 func (h *CreateUserHandler) Handle(
 	ctx context.Context,
 	command CreateUserCommand,

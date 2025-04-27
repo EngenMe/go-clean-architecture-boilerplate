@@ -14,21 +14,21 @@ import (
 
 // LoginRequest represents login credentials
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required,email" example:"user@example.com"`
+	Password string `json:"password" binding:"required" example:"password123"`
 }
 
 // SignUpRequest represents sign-up data
 type SignUpRequest struct {
-	Email     string `json:"email" binding:"required,email"`
-	Password  string `json:"password" binding:"required,min=6"`
-	FirstName string `json:"firstName" binding:"required"`
-	LastName  string `json:"lastName" binding:"required"`
+	Email     string `json:"email" binding:"required,email" example:"user@example.com"`
+	Password  string `json:"password" binding:"required,min=6" example:"password123"`
+	FirstName string `json:"firstName" binding:"required" example:"John"`
+	LastName  string `json:"lastName" binding:"required" example:"Doe"`
 }
 
 // AuthResponse represents the response to a successful authentication
 type AuthResponse struct {
-	Token string           `json:"token"`
+	Token string           `json:"token" example:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."`
 	User  entities.UserDTO `json:"user"`
 }
 

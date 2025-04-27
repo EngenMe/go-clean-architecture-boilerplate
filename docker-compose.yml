@@ -10,32 +10,31 @@ services:
     depends_on:
       - postgres
     environment:
-      - PORT=8080
-      - ENV=development
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=EngenMe
-      - DB_PASSWORD=Mehmed_0793727673
-      - DB_NAME=GO_CLEAN_ARCHITECTURE
-      - DB_SSL_MODE=disable
-      - JWT_SECRET=d0ef09c9-c182-4305-8508-091d87601a6e
-      - JWT_EXPIRATION_HOURS=24
+      - PORT=${PORT}
+      - ENV=${ENV}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_SSL_MODE=${DB_SSL_MODE}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION_HOURS=${JWT_EXPIRATION_HOURS}
     volumes:
       - .:/app  # Mount local code into container
     restart: unless-stopped
     networks:
       - go-clean-arch-network
 
-  # Postgres configuration remains the same
   postgres:
     image: postgres:17-alpine
     container_name: go-clean-arch-postgres
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=EngenMe
-      - POSTGRES_PASSWORD=Mehmed_0793727673
-      - POSTGRES_DB=GO_CLEAN_ARCHITECTURE
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./infrastructure/database/migrations:/docker-entrypoint-initdb.d

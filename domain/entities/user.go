@@ -6,13 +6,13 @@ import (
 
 // User represents a user entity in the system
 type User struct {
-	ID        uint      `json:"id" gorm:"primaryKey"`
-	Email     string    `json:"email" gorm:"uniqueIndex;not null"`
+	ID        uint      `json:"id" gorm:"primaryKey" example:"1"`
+	Email     string    `json:"email" gorm:"uniqueIndex;not null" example:"user@example.com"`
 	Password  string    `json:"-" gorm:"not null"` // Password is never exposed in JSON responses
-	FirstName string    `json:"firstName" gorm:"not null"`
-	LastName  string    `json:"lastName" gorm:"not null"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	FirstName string    `json:"firstName" gorm:"not null" example:"John"`
+	LastName  string    `json:"lastName" gorm:"not null" example:"Doe"`
+	CreatedAt time.Time `json:"createdAt" example:"2025-04-27T12:00:00Z"`
+	UpdatedAt time.Time `json:"updatedAt" example:"2025-04-27T12:00:00Z"`
 }
 
 // GetID returns the ID of the user
@@ -32,12 +32,12 @@ func (User) TableName() string {
 
 // UserDTO is a data transfer object for User entity
 type UserDTO struct {
-	ID        uint      `json:"id"`
-	Email     string    `json:"email"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
-	CreatedAt time.Time `json:"createdAt"`
-	UpdatedAt time.Time `json:"updatedAt"`
+	ID        uint      `json:"id" example:"1"`
+	Email     string    `json:"email" example:"user@example.com"`
+	FirstName string    `json:"firstName" example:"John"`
+	LastName  string    `json:"lastName" example:"Doe"`
+	CreatedAt time.Time `json:"createdAt" example:"2025-04-27T12:00:00Z"`
+	UpdatedAt time.Time `json:"updatedAt" example:"2025-04-27T12:00:00Z"`
 }
 
 // ToDTO converts a User entity to UserDTO

@@ -12,7 +12,7 @@ import (
 
 // GetUserByEmailQuery is a query to get a user by email
 type GetUserByEmailQuery struct {
-	Email string `json:"email" binding:"required,email"`
+	Email string `json:"email" binding:"required,email" example:"user@example.com"`
 }
 
 // GetUserByEmailHandler handles retrieving a user by email

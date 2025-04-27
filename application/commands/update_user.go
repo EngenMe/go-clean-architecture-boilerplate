@@ -14,11 +14,11 @@ import (
 
 // UpdateUserCommand is a command to update an existing user
 type UpdateUserCommand struct {
-	ID        uint   `json:"id" binding:"required"`
-	Email     string `json:"email" binding:"required,email"`
-	Password  string `json:"password"` // Optional
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+	ID        uint   `json:"id" binding:"required" example:"1"`
+	Email     string `json:"email" binding:"required,email" example:"user@example.com"`
+	Password  string `json:"password,omitempty" example:"newpassword123"`
+	FirstName string `json:"firstName" example:"John"`
+	LastName  string `json:"lastName" example:"Doe"`
 }
 
 // UpdateUserHandler handles updating of users

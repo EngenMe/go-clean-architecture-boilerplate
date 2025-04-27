@@ -1,0 +1,377 @@
+basePath: /api/v1
+definitions:
+  commands.CreateUserCommand:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      firstName:
+        example: John
+        type: string
+      lastName:
+        example: Doe
+        type: string
+      password:
+        example: password123
+        minLength: 6
+        type: string
+    required:
+    - email
+    - firstName
+    - lastName
+    - password
+    type: object
+  commands.UpdateUserCommand:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      firstName:
+        example: John
+        type: string
+      id:
+        example: 1
+        type: integer
+      lastName:
+        example: Doe
+        type: string
+      password:
+        example: newpassword123
+        type: string
+    required:
+    - email
+    - id
+    type: object
+  entities.UserDTO:
+    properties:
+      createdAt:
+        example: "2025-04-27T12:00:00Z"
+        type: string
+      email:
+        example: user@example.com
+        type: string
+      firstName:
+        example: John
+        type: string
+      id:
+        example: 1
+        type: integer
+      lastName:
+        example: Doe
+        type: string
+      updatedAt:
+        example: "2025-04-27T12:00:00Z"
+        type: string
+    type: object
+  services.AuthResponse:
+    properties:
+      token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        type: string
+      user:
+        $ref: '#/definitions/entities.UserDTO'
+    type: object
+  services.LoginRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: password123
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  services.SignUpRequest:
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      firstName:
+        example: John
+        type: string
+      lastName:
+        example: Doe
+        type: string
+      password:
+        example: password123
+        minLength: 6
+        type: string
+    required:
+    - email
+    - firstName
+    - lastName
+    - password
+    type: object
+  utils.APIError:
+    properties:
+      message:
+        example: An error occurred
+        type: string
+      status:
+        example: 400
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://www.example.com/support
+  description: API for user authentication and management
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://example.com/terms/
+  title: User Management API
+  version: "1.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and returns a JWT token and user details
+      parameters:
+      - description: Login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/services.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      summary: User login
+      tags:
+      - Authentication
+  /api/v1/auth/signup:
+    post:
+      consumes:
+      - application/json
+      description: Registers a new user and returns a JWT token and user details
+      parameters:
+      - description: Sign-up details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/services.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/services.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      summary: User registration
+      tags:
+      - Authentication
+  /api/v1/users:
+    get:
+      description: Retrieves a list of all users (protected endpoint)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.UserDTO'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      security:
+      - BearerAuth: []
+      summary: Get all users
+      tags:
+      - Users
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user (public endpoint)
+      parameters:
+      - description: User creation details
+        in: body
+        name: command
+        required: true
+        schema:
+          $ref: '#/definitions/commands.CreateUserCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.UserDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      summary: Create a new user
+      tags:
+      - Users
+  /api/v1/users/{id}:
+    delete:
+      description: Deletes a user by ID (protected endpoint)
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      security:
+      - BearerAuth: []
+      summary: Delete user
+      tags:
+      - Users
+    get:
+      description: Retrieves a user by their ID (protected endpoint)
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UserDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      security:
+      - BearerAuth: []
+      summary: Get user by ID
+      tags:
+      - Users
+    put:
+      consumes:
+      - application/json
+      description: Updates a user's information (protected endpoint)
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User update details
+        in: body
+        name: command
+        required: true
+        schema:
+          $ref: '#/definitions/commands.UpdateUserCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UserDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      security:
+      - BearerAuth: []
+      summary: Update user
+      tags:
+      - Users
+  /api/v1/users/email/{email}:
+    get:
+      description: Retrieves a user by their email address (public endpoint)
+      parameters:
+      - description: User email
+        in: path
+        name: email
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.UserDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.APIError'
+      summary: Get user by email
+      tags:
+      - Users
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
