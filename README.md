@@ -107,20 +107,20 @@ cd go-clean-architecture
    Default `.env`:
    ```env
    # Server settings
-   PORT=8080
-   ENV=development
-
-   # Database settings
-   DB_HOST=postgres
-   DB_PORT=5432
-   DB_USER=EngenMe
-   DB_PASSWORD=Mehmed_0793727673
-   DB_NAME=GO_CLEAN_ARCHITECTURE
-   DB_SSL_MODE=disable
-
-   # JWT settings
-   JWT_SECRET=d0ef09c9-c182-4305-8508-091d87601a6e
-   JWT_EXPIRATION_HOURS=24
+    PORT=8080
+    ENV=development
+    
+    # Database settings
+    DB_HOST=postgres
+    DB_PORT=5432
+    DB_USER=postgres
+    DB_PASSWORD=password
+    DB_NAME=cleanarchdb
+    DB_SSL_MODE=disable
+    
+    # JWT settings
+    JWT_SECRET=your_jwt_secret_key
+    JWT_EXPIRATION_HOURS=24
    ```
 
 2. **Ensure `.env` is not committed**:
